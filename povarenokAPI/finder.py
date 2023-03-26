@@ -1,8 +1,10 @@
-from _typeshed import Self
+import re
 from configparser import ConfigParser
-from typing import Union, List, Dict
+from typing import Union, List, Dict, NewType, Any
 
 from povarenokAPI.request_executer import Atom
+
+Self = NewType("Self", Any)
 
 
 class Constanter:
@@ -125,6 +127,7 @@ class Constanter:
 
 
 class RecpieFinder(Atom, Constanter):
+    find_not_readable = re.compile("\t[0-9]*")
     def __init__(
             self,
             params: dict,
@@ -141,7 +144,7 @@ class RecpieFinder(Atom, Constanter):
         self.params = params
         self.soup = self.execute_request("findRecpie", data=params)
 
-    def get_results(self) -> List[Dict[str: Union[str, int, List[str]]]]:
+    def get_results(self) -> List[Dict[str, Union[str, int, List[str]]]]:
         """
         Получить результаты поиска.
 
@@ -179,11 +182,12 @@ class RecpieFinder(Atom, Constanter):
     def find_by_ingredients(
             cls, need_to_be: List[str], doesnt_be: List[str],
             config_file: Union[str, ConfigParser], host: str = None,
-            kitchen: str = "Все", cat: str = "Все", orderby: int = 0
+            kitchen: str = "Все", cat: str = "Все", orderby: int = 0, autocomplite: bool = True
     ) -> Self:
         """
         Поиск рецептов по ингредиентам.
 
+        :param autocomplite: Необходимо, если ингредиенты указаны неточно, ищет ближайший ингредиент по названию.
         :param need_to_be: Какие ингредиенты должны быть.
         :param doesnt_be: А каких быть не должно.
         :param config_file: Файл конфигурации.
@@ -193,6 +197,9 @@ class RecpieFinder(Atom, Constanter):
         :param orderby: Сортировка ответов (смотри виды в Constanter)
         :return: RecpieFinder выполнивший поиск по заданным параметрам.
         """
+        if autocomplite:
+            need_to_be = list(map(lambda x: cls.find_probably_ingredients(x, config_file)[0], need_to_be))
+            doesnt_be = list(map(lambda x: cls.find_probably_ingredients(x, config_file)[0], doesnt_be))
         return cls(
             {
                 "ing": ", ".join(map(cls.quote, need_to_be)),
@@ -201,5 +208,24 @@ class RecpieFinder(Atom, Constanter):
                 "orderby": cls.orderby[orderby],
                 "cat": cls.cat[cat]
             }, config_file, host=host)
+
+    @classmethod
+    def find_probably_ingredients(cls, ingredient: str, config_file: Union[str, ConfigParser], host: str = None) -> List[str]:
+        a = Atom(config_file, host)
+        answer = a.executer.execute_request("findIngridient", data={"q": ingredient}).text
+        if answer:
+            try:
+                answer = eval(answer, {}, {})
+            except SyntaxError:
+                return [ingredient]
+            if type(answer) == str:
+                return [cls.find_not_readable.sub("", answer)]
+            if type(answer) == list:
+                if len(answer) == 0:
+                    return [ingredient]
+                return list(map(lambda x: cls.find_not_readable.sub("", x), answer))
+            return [ingredient]
+        return [ingredient]
+
 
 

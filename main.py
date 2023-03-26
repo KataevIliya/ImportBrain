@@ -21,5 +21,10 @@ f = RecpieFinder.find_by_name("Селдь под шубой", config_file, order
 pprint(f.get_results())
 
 # Пример поиска по ингредиентам (Селдь, рис; без Моркови; кухня русская)
-f2 = RecpieFinder.find_by_ingredients(["Селдь", "Рис"], ["Морковь"], config_file, cat="Русская")
+f2 = RecpieFinder.find_by_ingredients(["Селёдка", "Рис"], ["Морковь"], config_file, kitchen="Русская")
 pprint(f2.get_results())
+
+
+# Поиск похожих по названию ингредиентов
+f = RecpieFinder.find_probably_ingredients("Фа", config_file)
+print(f)
