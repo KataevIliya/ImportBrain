@@ -211,6 +211,14 @@ class RecpieFinder(Atom, Constanter):
 
     @classmethod
     def find_probably_ingredients(cls, ingredient: str, config_file: Union[str, ConfigParser], host: str = None) -> List[str]:
+        """
+        Поиск похожих по названию ингредиентов.
+
+        :param ingredient: Ингредиент.
+        :param config_file: Файл конфигурации.
+        :param host: Хост для совершения запросов.
+        :return: Список названий ингредиентов согласованный с сайтом.
+        """
         a = Atom(config_file, host)
         answer = a.executer.execute_request("findIngridient", data={"q": ingredient}).text
         if answer:
