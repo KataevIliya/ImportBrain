@@ -26,6 +26,24 @@ class Recpie(Atom):
         self.id = id
         self.soup = self.execute_request("getRecpie", format={"id": self.id})
 
+    def get_author(self) -> str:
+        """
+        Получить автора рецепта.
+
+        :return: Ник автора.
+        """
+        author = str(self.get_list_attr(self.find_by_xpath(self.soup, "//span[@itemprop='author']/ancestor::a"), "attrib", {"href": "/nan/povarenok/"})["href"].strip("/").split("/")[-1])
+        return author
+
+    def get_description(self) -> str:
+        """
+        Получить описание рецерта.
+
+        :return: Описание рецепта.
+        """
+        description = self.get_list_attr(self.find_by_xpath(self.soup, "//div[@itemprop='description']/p"), "text", "")
+        return description
+
     def get_ingridients(self) -> List[Tuple[str, str]]:
         """
         ПОлучение списка ингредиентов.

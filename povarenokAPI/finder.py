@@ -153,6 +153,8 @@ class RecpieFinder(Atom, Constanter):
             "title": Название рецепта,
             "cetegories": Категории к которым принадлежит рецепт,
             "ingredients": Ингредиенты рецепта,
+            "description": Описание рецепта,
+            "author": Автор рецепта
         }
         """
         recpies = self.find_by_xpath(self.soup, "//article[@class='item-bl']")
@@ -162,7 +164,9 @@ class RecpieFinder(Atom, Constanter):
             title = self.get_list_attr(r.xpath("./h2/a"), "text", "")
             cats = list(map(str, r.xpath("./div[@class='article-breadcrumbs']/p/span/a/text()")))
             ings = list(map(str, r.xpath("./div[@class='article-tags']/div/div/p/span/a/text()")))
-            results.append({"id": idt, "title": title, "cetegories": cats, "ingredients": ings})
+            descript = self.get_list_attr(r.xpath("./p"), "text", "")
+            author = str(self.get_list_attr(r.xpath("./div/a[@class='user-link']"), "attrib", {"href": "/nan/povarenok/"})["href"].strip("/").split("/")[-1])
+            results.append({"id": idt, "title": title, "cetegories": cats, "ingredients": ings, "description": descript, "author": author})
         return results
 
     @classmethod
