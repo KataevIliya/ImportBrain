@@ -38,9 +38,12 @@ class Calculator:
         "градус по кельвину": "kelvin",
         "кельвин": "kelvin",
     }
-    def __init__(self, calc_file_name: str, config_file: Union[str, ConfigParser]):
-        with open(calc_file_name, "r", encoding="utf-8") as f:
-            self.calc = json.load(f)
+    def __init__(self, calc_file_name: Union[str, None], config_file: Union[str, ConfigParser]):
+        try:
+            with open(calc_file_name, "r", encoding="utf-8") as f:
+                self.calc = json.load(f)
+        except (FileNotFoundError, TypeError):
+            self.calc = None
         self.config_file = config_file
 
     def translate(self, value: float, _from: str, to: str) -> Tuple[float, Tuple[str, str]]:
@@ -62,3 +65,7 @@ class Calculator:
         if str(ml) in data:
             return data[ml]
         return data["100"] * ml / 100
+
+    def get_ml_by_grammes(self, ingredient: str, grammes: float) -> float:
+        g100 = self.get_grammes_by_ml(ingredient, 100)
+        return grammes * 100 / g100
