@@ -47,6 +47,14 @@ class Calculator:
         self.config_file = config_file
 
     def translate(self, value: float, _from: str, to: str) -> Tuple[float, Tuple[str, str]]:
+        """
+        Перевод одних единиц измерения в другие.
+
+        :param value: Сколько
+        :param _from: Чего
+        :param to: Переводим во что
+        :return: Результат перевода
+        """
         f = nearest_string(self.russian_meters.keys(), _from.lower())
         t = nearest_string(self.russian_meters.keys(), to.lower())
         if None in [f, t]:
@@ -54,6 +62,13 @@ class Calculator:
         return self.ureg.convert(value, self.russian_meters[f], self.russian_meters[t]), (f, t)
 
     def get_grammes_by_ml(self, ingredient: str, ml: float) -> float:
+        """
+        Переводим массу сыпучего вещества в объём.
+
+        :param ingredient: Чего
+        :param ml: Сколько мл
+        :return: Сколько грамм
+        """
         if ingredient not in self.calc:
             ingredient = RecpieFinder.find_probably_ingredients(ingredient, self.config_file)
             if not len(ingredient):
@@ -67,5 +82,12 @@ class Calculator:
         return data["100"] * ml / 100
 
     def get_ml_by_grammes(self, ingredient: str, grammes: float) -> float:
+        """
+        Переводим объём сыпучего вещества в массу.
+
+        :param ingredient: Чего
+        :param grammes: Сколько грамм
+        :return: Сколько мл
+        """
         g100 = self.get_grammes_by_ml(ingredient, 100)
         return grammes * 100 / g100

@@ -5,7 +5,7 @@ from povarenokAPI import get_author_gender
 from povarenokAPI.finder import RecpieFinder
 from povarenokAPI.recpie import Recpie
 from utils import Calculator
-from utils.command_classificer import *
+from utils.command_classificer import StringParamtr, IntParametr, FloatParametr, CommandClassificer
 
 config_file = os.path.join(
     *os.path.split(__file__)[:-1],
@@ -78,4 +78,4 @@ c.add_commands([
 print(c.get_params_by_command("поставь пожалуйста таймер на 25 минут"))
 print(c.get_params_by_command("алисочка поставь таймер на 3 часика"))
 print(c.get_params_by_command("Найди мне рецепт борща"))
-print(c.get_params_by_command("слышь книга поваренная какой там рецепт у борща"))
+print(c.get_params_by_command("слышь книга поваренная какой там рецепт у борща"))  # Если она будет искать по этим параметрам, ничего плохого не будет
