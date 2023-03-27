@@ -29,6 +29,7 @@ def nearest_string(array: Iterable[str], string: str) -> Union[str, None]:
     :param string: Строка, которую ищем.
     :return: None если похожей строки нет, если она есть - похожую
     """
+    array = list(array)
     if not array:
         return None
     if string in array:

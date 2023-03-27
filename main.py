@@ -5,6 +5,7 @@ from povarenokAPI import get_author_gender
 from povarenokAPI.finder import RecpieFinder
 from povarenokAPI.recpie import Recpie
 from utils import Calculator
+from utils.command_classificer import *
 
 config_file = os.path.join(
     *os.path.split(__file__)[:-1],
@@ -51,3 +52,31 @@ print(c.get_grammes_by_ml("Мёд", 50))
 print(c.get_grammes_by_ml("Марцип", 50))
 # Несуществующий продукт
 print(c.get_grammes_by_ml("абакаба", 50))
+
+# Пример использования классияикатора команд
+c = CommandClassificer(config_file)
+c.add_commands([
+    "поставь таймер на XX минут",
+    "таймер на XX минут",
+    "засеки XX минут",
+    "отмерь XX минут",
+    "скажи когда пройдёт XX минут"
+], {IntParametr}, "minutes timer", {("тайм", "отмер", "засек", "пройд"), "мин"})
+c.add_commands([
+    "поставь таймер на X часа",
+    "таймер на X часа",
+    "засеки X часа",
+    "отмерь X часа",
+    "скажи когда пройдёт X часа",
+], {IntParametr}, "hour timer", {("тайм", "отмер", "засек", "пройд"), "час"})
+c.add_commands([
+    "найди рецепт SSSSSSSSSSSS",
+    "какой рецепт у SSSSSSSSSSSS",
+    "поиск рецепта SSSSSSSSSS"
+], {StringParamtr}, "find recpie", {"рецепт"})
+
+print(c.get_params_by_command("поставь пожалуйста таймер на 25 минут"))
+print(c.get_params_by_command("алисочка поставь таймер на 3 часика"))
+
+print(c.get_params_by_command("Найди мне рецепт борща"))
+print(c.get_params_by_command("слышь книга поваренная какой там рецепт у борща"))
