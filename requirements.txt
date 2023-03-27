@@ -10,3 +10,4 @@ soupsieve==2.4
 urllib3==1.26.15
 wheel==0.36.2
 Pint~=0.20.1
+pymorphy2~=0.9.1

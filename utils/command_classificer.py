@@ -1,6 +1,6 @@
 import re
 from configparser import ConfigParser
-from typing import Union, List, Dict, Set, Tuple
+from typing import Union, List, Set, Tuple
 
 import pymorphy2 as pymorphy2
 
