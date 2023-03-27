@@ -214,10 +214,11 @@ class RecpieFinder(Atom, Constanter):
             }, config_file, host=host)
 
     @classmethod
-    def find_probably_ingredients(cls, ingredient: str, config_file: Union[str, ConfigParser], host: str = None) -> List[str]:
+    def find_probably_ingredients(cls, ingredient: str, config_file: Union[str, ConfigParser], host: str = None, return_empty: bool = False) -> List[str]:
         """
         Поиск похожих по названию ингредиентов.
 
+        :param return_empty: При отсутсвии ингредиента возвращать пустой список. Если выключено - возвращается [ingredient]
         :param ingredient: Ингредиент.
         :param config_file: Файл конфигурации.
         :param host: Хост для совершения запросов.
@@ -225,19 +226,20 @@ class RecpieFinder(Atom, Constanter):
         """
         a = Atom(config_file, host)
         answer = a.executer.execute_request("findIngridient", data={"q": ingredient}).text
+        default = [] if return_empty else [ingredient]
         if answer:
             try:
                 answer = eval(answer, {}, {})
             except SyntaxError:
-                return [ingredient]
+                return default
             if type(answer) == str:
                 return [cls.find_not_readable.sub("", answer)]
             if type(answer) == list:
                 if len(answer) == 0:
-                    return [ingredient]
+                    return default
                 return list(map(lambda x: cls.find_not_readable.sub("", x), answer))
-            return [ingredient]
-        return [ingredient]
+            return default
+        return default
 
 
 
