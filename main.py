@@ -77,6 +77,5 @@ c.add_commands([
 
 print(c.get_params_by_command("поставь пожалуйста таймер на 25 минут"))
 print(c.get_params_by_command("алисочка поставь таймер на 3 часика"))
-
 print(c.get_params_by_command("Найди мне рецепт борща"))
 print(c.get_params_by_command("слышь книга поваренная какой там рецепт у борща"))
