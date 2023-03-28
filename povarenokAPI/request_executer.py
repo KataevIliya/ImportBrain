@@ -98,9 +98,8 @@ class Atom:
         :param s: Страка, которую надо закодировать.
         :return: Закодированная строка.
         """
-        s = list(map(lambda x: hex(ord(x) - 848)[-2:].upper() if x not in string.printable else x, s))
-        s = list(map("%".__add__, s))
-        return "".join(s).replace("% ", "+")
+        s = list(map(lambda x: "%" + hex(ord(x) - 848)[-2:].upper() if x not in string.printable else x, s))
+        return "".join(s).replace(" ", "+").replace("|", "%7C")
 
     @property
     def timestamp(self):
