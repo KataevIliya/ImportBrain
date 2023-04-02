@@ -11,7 +11,26 @@ from .levi import nearest_string
 
 class Calculator:
     ureg = UnitRegistry()
+    ureg.define('spoon = 18 * ml')
+    ureg.define('tee_spoon = 5 * ml = tspon')
+    ureg.define('cap = 250 * ml')
+    ureg.define('glass = 300 * ml')
     russian_meters = {
+        "чайная ложка": "tee_spoon",
+        "маленькая ложка": "tee_spoon",
+        "столовая ложка": "spoon",
+        "десертная ложка": "spoon",
+        "ложка": "spoon",
+        "стакан": "glass",
+        "гранённый стакан": "glass",
+        "столовый стакан": "glass",
+        "стаканчик": "glass",
+        "кухонный стакан": "glass",
+        "чайная чашка": "cap",
+        "чашка": "cap",
+        "кружка": "cap",
+        "чашечка": "cap",
+        "кружечка": "cap",
         "мг": "mg",
         "миллиграмм": "mgram",
         "г": "g",
