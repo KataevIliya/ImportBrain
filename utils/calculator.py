@@ -5,6 +5,7 @@ from pint import UnitRegistry
 import json
 
 from povarenokAPI import RecpieFinder
+from .intuitive_calc import IntuitiveCalcAddon
 from .levi import nearest_string
 
 
@@ -45,6 +46,7 @@ class Calculator:
         except (FileNotFoundError, TypeError):
             self.calc = None
         self.config_file = config_file
+        self.ic = IntuitiveCalcAddon(self)
 
     def translate(self, value: float, _from: str, to: str) -> Tuple[float, Tuple[str, str]]:
         """
@@ -60,6 +62,9 @@ class Calculator:
         if None in [f, t]:
             return float("nan"), (_from, to)
         return self.ureg.convert(value, self.russian_meters[f], self.russian_meters[t]), (f, t)
+
+    def get_grammes_intuitive(self, command: str) -> Tuple[str, float]:
+        return self.ic.get_grammes_intuitive(command)
 
     def get_grammes_by_ml(self, ingredient: str, ml: float) -> float:
         """

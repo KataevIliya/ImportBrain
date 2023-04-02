@@ -1,11 +1,13 @@
 import re
 from configparser import ConfigParser
-from typing import Union, List, Set, Tuple
+from typing import Union, List, Set, Tuple, Iterable, NewType
 
 import pymorphy2 as pymorphy2
 
-from utils import Calculator, nearest_string
+from utils.levi import nearest_string
 
+
+Token = NewType("Token", Union[Iterable[str], str])
 
 class Parameter:
     def __init__(self, name: str):
@@ -32,17 +34,16 @@ FloatParametr = Parameter("float")
 
 class CommandClassificer:
     morph = pymorphy2.MorphAnalyzer(lang="ru")
-    def __init__(self, config_file: Union[str, ConfigParser]):
+    def __init__(self, *args):
         """
         Классификатор команд по заданным категориям.
 
         :param config_file: Файл конфигурации.
         """
-        self.calc = Calculator(None, config_file)
         self.cmds = {}
         self.tokens = {}
 
-    def add_command(self, command: str, parametrs: Set[Parameter], category: str, tokens: Set[Union[Tuple[str], str]]):
+    def add_command(self, command: str, parametrs: Set[Parameter], category: str, tokens: Set[Token]):
         """
         Добавление типа команд.
 
@@ -83,7 +84,7 @@ class CommandClassificer:
                         ans.append(self.to_simple_form(ss))
         return category, ans
 
-    def add_commands(self, commands: List[str], parametrs: Set[Parameter], category: str, tokens: Set[Union[Tuple[str], str]]):
+    def add_commands(self, commands: List[str], parametrs: Set[Parameter], category: str, tokens: Set[Token]):
         """
         Добавление схожих типов команд.
 
@@ -131,7 +132,7 @@ class CommandClassificer:
         return parsed[0].tag.POS not in ["ADJS", "COMP", "VERB", "INFN", "PRTS", "GRND", "ADVB", "NPRO", "PRED", "PREP", "CONJ", "PRCL", "INTJ"]
 
     @staticmethod
-    def check_tokens(tokens: Set[Union[Tuple[str], str]], command: str):
+    def check_tokens(tokens: Set[Token], command: str):
         for i in tokens:
             if type(i) == str:
                 if i not in command:
